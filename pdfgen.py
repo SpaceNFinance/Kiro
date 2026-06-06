@@ -212,77 +212,230 @@ class PDF:
         self._ops.append("%d J %.3f %.3f %.3f RG %.2f w %s S 0 G 0 J"
                          % (cap, r, g, b, width, seg))
 
-    # -- a simple flat cartoon person ----------------------------------------
-    def person(self, cx, base, f=1.0, shirt=(0.30, 0.45, 0.75),
-               pants=(0.25, 0.27, 0.32), skin=(0.98, 0.80, 0.66),
-               hair=(0.55, 0.55, 0.58), pose='stand'):
-        hip = base + 52 * f
-        shoulder = hip + 60 * f
-        head_cy = shoulder + 22 * f
-        hr = 16 * f
-        tw = 30 * f
-        # legs
-        self.thick_line(cx - 8 * f, hip, cx - 8 * f, base, 12 * f, pants)
-        self.thick_line(cx + 8 * f, hip, cx + 8 * f, base, 12 * f, pants)
-        # torso (capsule)
-        self.thick_line(cx, hip, cx, shoulder, tw, shirt)
-        # arms by pose
-        sh_l = (cx - tw / 2 + 2 * f, shoulder - 4 * f)
-        sh_r = (cx + tw / 2 - 2 * f, shoulder - 4 * f)
+    # -- improved cartoon person ----------------------------------------------
+    def person(self, cx, base, f=1.0, shirt=(0.85, 0.38, 0.26),
+               pants=(0.30, 0.34, 0.50), skin=(0.97, 0.78, 0.62),
+               hair=(0.42, 0.28, 0.18), shoe=(0.22, 0.18, 0.14),
+               pose='stand', gender='m'):
+        """
+        A warmer, rounder cartoon person.
+        pose: 'stand' | 'wave' | 'arms_up' | 'sit' | 'lean'
+        gender: 'm' | 'f'  (affects hair silhouette only)
+        """
+        # proportions
+        leg_h   = 62 * f
+        torso_h = 58 * f
+        neck_h  = 10 * f
+        hr      = 18 * f          # head radius
+        tw      = 32 * f          # torso half-width (used as line width)
+        leg_w   = 13 * f
+        arm_w   = 11 * f
+
+        foot_y  = base
+        hip_y   = foot_y + leg_h
+        shldr_y = hip_y  + torso_h
+        neck_y  = shldr_y + neck_h
+        head_cy = neck_y  + hr
+
+        # ── shadow ellipse under feet ──────────────────────────────────────
+        self.ellipse(cx, foot_y + 4, 22 * f, 6 * f,
+                     fill=(0.0, 0.0, 0.0, 0.0) if False else None)
+        # (skip: shadow looks odd without transparency support)
+
+        # ── legs ──────────────────────────────────────────────────────────
+        if pose == 'sit':
+            # left leg horizontal, right leg tucked
+            self.thick_line(cx - 10*f, hip_y, cx - 38*f, hip_y - 10*f,
+                            leg_w, pants)
+            self.thick_line(cx + 10*f, hip_y, cx + 36*f, hip_y - 8*f,
+                            leg_w, pants)
+            # shoes at end of each leg
+            self.ellipse(cx - 44*f, hip_y - 10*f, 10*f, 6*f, fill=shoe)
+            self.ellipse(cx + 42*f, hip_y - 8*f,  10*f, 6*f, fill=shoe)
+        else:
+            self.thick_line(cx - 9*f, hip_y, cx - 9*f, foot_y + 6*f,
+                            leg_w, pants)
+            self.thick_line(cx + 9*f, hip_y, cx + 9*f, foot_y + 6*f,
+                            leg_w, pants)
+            # rounded shoe bumps
+            self.ellipse(cx - 9*f,  foot_y + 5*f, 12*f, 7*f, fill=shoe)
+            self.ellipse(cx + 9*f,  foot_y + 5*f, 12*f, 7*f, fill=shoe)
+
+        # ── torso (wide rounded capsule) ───────────────────────────────────
+        self.thick_line(cx, hip_y, cx, shldr_y, tw * 2.0, shirt)
+
+        # ── shirt collar V ────────────────────────────────────────────────
+        collar = (
+            min(shirt[0] + 0.12, 1.0),
+            min(shirt[1] + 0.12, 1.0),
+            min(shirt[2] + 0.12, 1.0),
+        )
+        self.polygon(
+            [(cx - 7*f, shldr_y - 4*f),
+             (cx,       shldr_y - 16*f),
+             (cx + 7*f, shldr_y - 4*f)],
+            fill=collar
+        )
+
+        # ── arms ──────────────────────────────────────────────────────────
+        sh_l = (cx - tw + 2*f, shldr_y - 8*f)
+        sh_r = (cx + tw - 2*f, shldr_y - 8*f)
+
         if pose == 'arms_up':
-            hand_l = (cx - tw / 2 - 14 * f, shoulder + 46 * f)
-            hand_r = (cx + tw / 2 + 14 * f, shoulder + 46 * f)
+            hand_l = (cx - tw - 16*f, shldr_y + 48*f)
+            hand_r = (cx + tw + 16*f, shldr_y + 48*f)
         elif pose == 'wave':
-            hand_l = (cx - tw / 2 - 20 * f, hip + 22 * f)
-            hand_r = (cx + tw / 2 + 16 * f, shoulder + 40 * f)
+            hand_l = (cx - tw - 18*f, hip_y + 20*f)
+            hand_r = (cx + tw + 18*f, shldr_y + 42*f)
+        elif pose == 'lean':
+            hand_l = (cx - tw - 22*f, hip_y + 8*f)
+            hand_r = (cx + tw + 10*f, hip_y + 34*f)
+        elif pose == 'sit':
+            hand_l = (cx - 28*f, hip_y + 16*f)
+            hand_r = (cx + 28*f, hip_y + 16*f)
         else:  # stand
-            hand_l = (cx - tw / 2 - 12 * f, hip + 18 * f)
-            hand_r = (cx + tw / 2 + 12 * f, hip + 18 * f)
-        self.thick_line(sh_l[0], sh_l[1], hand_l[0], hand_l[1], 10 * f, shirt)
-        self.thick_line(sh_r[0], sh_r[1], hand_r[0], hand_r[1], 10 * f, shirt)
-        self.circle(hand_l[0], hand_l[1], 5 * f, fill=skin)
-        self.circle(hand_r[0], hand_r[1], 5 * f, fill=skin)
-        # head + hair + face
-        self.circle(cx, head_cy, hr, fill=skin)
-        self.ellipse(cx, head_cy + hr * 0.45, hr * 1.08, hr * 0.78, fill=hair)
-        self.circle(cx - hr * 0.4, head_cy + 1 * f, 2.0 * f, fill=(0.2, 0.2, 0.2))
-        self.circle(cx + hr * 0.4, head_cy + 1 * f, 2.0 * f, fill=(0.2, 0.2, 0.2))
-        return {"head_cy": head_cy, "hr": hr, "hand_r": hand_r, "hand_l": hand_l,
-                "shoulder": shoulder, "hip": hip}
+            hand_l = (cx - tw - 14*f, hip_y + 16*f)
+            hand_r = (cx + tw + 14*f, hip_y + 16*f)
+
+        self.thick_line(sh_l[0], sh_l[1], hand_l[0], hand_l[1], arm_w, shirt)
+        self.thick_line(sh_r[0], sh_r[1], hand_r[0], hand_r[1], arm_w, shirt)
+
+        # ── hands (palm + 3 finger nubs) ──────────────────────────────────
+        for hx, hy in (hand_l, hand_r):
+            self.circle(hx, hy, 6*f, fill=skin)
+            # three small finger bumps along the top
+            for di in (-1, 0, 1):
+                fx = hx + di * 4*f
+                fy = hy + 5*f
+                self.circle(fx, fy, 2.8*f, fill=skin)
+
+        # ── neck ──────────────────────────────────────────────────────────
+        self.thick_line(cx, neck_y - 4*f, cx, shldr_y, 12*f, skin)
+
+        # ── head (slightly oval, warm skin) ───────────────────────────────
+        self.ellipse(cx, head_cy, hr, hr * 1.05, fill=skin)
+
+        # ── ears ──────────────────────────────────────────────────────────
+        self.ellipse(cx - hr + 2*f, head_cy - 2*f, 5*f, 7*f, fill=skin)
+        self.ellipse(cx + hr - 2*f, head_cy - 2*f, 5*f, 7*f, fill=skin)
+
+        # ── hair ──────────────────────────────────────────────────────────
+        if gender == 'f':
+            # longer flowing hair (two side lobes + top cap)
+            self.ellipse(cx - hr * 0.7, head_cy - hr * 0.5,
+                         hr * 0.7, hr * 1.3, fill=hair)
+            self.ellipse(cx + hr * 0.7, head_cy - hr * 0.5,
+                         hr * 0.7, hr * 1.3, fill=hair)
+            self.ellipse(cx, head_cy + hr * 0.55, hr * 1.10, hr * 0.72, fill=hair)
+        else:
+            # short neat hair: top cap + slight side taper
+            self.ellipse(cx, head_cy + hr * 0.55, hr * 1.06, hr * 0.68, fill=hair)
+            self.ellipse(cx - hr * 0.55, head_cy + hr * 0.1,
+                         hr * 0.5, hr * 0.62, fill=hair)
+            self.ellipse(cx + hr * 0.55, head_cy + hr * 0.1,
+                         hr * 0.5, hr * 0.62, fill=hair)
+
+        # ── eyes (white sclera + dark iris + small highlight) ─────────────
+        for ex, sign in ((cx - hr * 0.38, -1), (cx + hr * 0.38, 1)):
+            ey = head_cy + 3*f
+            self.ellipse(ex, ey, 4.5*f, 4.0*f, fill=(1, 1, 1))
+            self.circle(ex, ey, 2.8*f, fill=(0.18, 0.12, 0.08))
+            self.circle(ex + 1.2*f, ey + 1.2*f, 1.0*f, fill=(1, 1, 1))
+
+        # ── eyebrows ──────────────────────────────────────────────────────
+        brow = (max(hair[0]-0.05,0), max(hair[1]-0.05,0), max(hair[2]-0.05,0))
+        for ex in (cx - hr*0.38, cx + hr*0.38):
+            self.thick_line(ex - 4*f, head_cy + 9*f,
+                            ex + 4*f, head_cy + 10*f, 2*f, brow)
+
+        # ── nose (small dot/bump) ─────────────────────────────────────────
+        nose_c = (skin[0]*0.88, skin[1]*0.75, skin[2]*0.70)
+        self.ellipse(cx, head_cy - 1*f, 2.5*f, 3*f, fill=nose_c)
+
+        # ── smile ─────────────────────────────────────────────────────────
+        # drawn as two overlapping ellipses (light arc trick)
+        smile_c = (0.72, 0.32, 0.24)
+        self.ellipse(cx, head_cy - 8*f, 7*f, 4.5*f, fill=smile_c)
+        self.ellipse(cx, head_cy - 6.5*f, 6*f, 3.5*f, fill=skin)
+
+        # ── cheek blush ───────────────────────────────────────────────────
+        blush = (1.0, 0.72, 0.68)
+        self.ellipse(cx - hr*0.62, head_cy - 3*f, 5*f, 3.5*f, fill=blush)
+        self.ellipse(cx + hr*0.62, head_cy - 3*f, 5*f, 3.5*f, fill=blush)
+
+        return {
+            "head_cy": head_cy, "hr": hr,
+            "hand_r": hand_r, "hand_l": hand_l,
+            "shoulder": shldr_y, "hip": hip_y,
+            "foot_y": foot_y,
+        }
 
     # -- cover page -----------------------------------------------------------
     def cover(self, title, subtitle, series, audience, scene, palette):
         self.new_page()
         W, H = self.page_w, self.page_h
-        pal = palette
-        # background
-        self.rect_rgb(0, 0, W, H, pal['bg'])
-        # top accent bar
-        self.rect_rgb(0, H - 30, W, 30, pal['accent'])
-        # decorative sun/emblem behind the scene
-        self.circle(W / 2.0, 432, 128, fill=pal['circle'])
-        # bottom band acts as the ground the characters stand on
-        self.rect_rgb(0, 0, W, 158, pal['accent'])
-        self.rect_rgb(0, 152, W, 8, pal['ground'])
-        # the cartoon scene
-        SCENES[scene](self, pal)
-        # title
-        ty = 712
-        for line in wrap(title, 30, W - 96, bold=True):
-            self.draw_text_centered(ty, line, 30, bold=True, color=pal['title'])
-            ty -= 36
-        # subtitle
-        ty -= 6
-        for line in wrap(subtitle, 13.5, W - 150, bold=False):
-            self.draw_text_centered(ty, line, 13.5, bold=False, color=pal['sub'])
-            ty -= 19
-        # series + audience on the bottom band (white)
-        white = (1, 1, 1)
-        self.draw_text_centered(112, series, 13, bold=True, color=white)
-        ay = 90
-        for line in wrap(audience, 10.5, W - 130):
-            self.draw_text_centered(ay, line, 10.5, color=white)
-            ay -= 15
+        p = palette
+
+        # ── sky background: two-tone gradient (stacked bands) ─────────────
+        sky_top = p['sky_top']
+        sky_bot = p['sky_mid']
+        # approximate a gradient with 6 horizontal bands
+        for i in range(6):
+            t = i / 5.0
+            band_col = tuple(sky_top[c] + (sky_bot[c] - sky_top[c]) * t
+                             for c in range(3))
+            bh = (H - 180) / 6.0
+            self.rect_rgb(0, 180 + (5 - i) * bh, W, bh + 1, band_col)
+
+        # ── ground / floor (two-tone) ─────────────────────────────────────
+        self.rect_rgb(0, 0,   W, 180, p['ground_dark'])
+        self.rect_rgb(0, 152, W,  40, p['ground_light'])
+
+        # ── horizon glow ellipse ──────────────────────────────────────────
+        self.ellipse(W / 2.0, 192, 210, 56, fill=p['glow'])
+
+        # ── fluffy clouds (3 overlapping circles each) ────────────────────
+        for cx_c, cy_c in ((130, 630), (390, 680), (530, 610)):
+            for dx, s in ((-22, 20), (0, 26), (22, 20)):
+                self.circle(cx_c + dx, cy_c, s, fill=p['cloud'])
+
+        # ── large warm sun / moon disc ────────────────────────────────────
+        self.circle(W - 106, H - 128, 62, fill=p['sun'])
+        self.circle(W - 106, H - 128, 54, fill=p['sun_inner'])
+
+        # ── scene-specific illustration ───────────────────────────────────
+        SCENES[scene](self, p)
+
+        # ── title card (rounded-rect feel via two stacked rects) ──────────
+        card_y = H - 72
+        card_h = 132
+        self.rect_rgb(0, card_y - card_h, W, card_h + 2, p['card_bg'])
+        # top border line of card
+        self.thick_line(0, card_y, W, card_y, 4, p['card_border'])
+
+        # ── series badge (small pill at top of card) ──────────────────────
+        bw, bh = 220, 20
+        bx = (W - bw) / 2.0
+        by = card_y - 10
+        self.rect_rgb(bx, by, bw, bh, p['badge_bg'])
+        self.draw_text_centered(by + 5, series, 10, bold=True,
+                                color=p['badge_text'])
+
+        # ── title text ────────────────────────────────────────────────────
+        ty = card_y - 38
+        for line in wrap(title, 27, W - 80, bold=True):
+            self.draw_text_centered(ty, line, 27, bold=True, color=p['title'])
+            ty -= 32
+
+        # ── subtitle ──────────────────────────────────────────────────────
+        ty -= 4
+        for line in wrap(subtitle, 12, W - 120):
+            self.draw_text_centered(ty, line, 12, color=p['sub'])
+            ty -= 17
+
+        # ── footer strip ──────────────────────────────────────────────────
+        self.rect_rgb(0, 0, W, 36, p['footer_bg'])
+        self.draw_text_centered(13, audience, 9.5, color=p['footer_text'])
 
     # -- high level paragraph helpers ----------------------------------------
     def paragraph(self, text, size=14.5, bold=False, leading=None, gap_after=11,
@@ -601,137 +754,524 @@ class PDF:
 
 
 # ============================================================================
-# Cover palettes and cartoon scenes
+# Cover palettes and cartoon scenes  (v2 — warmer, richer)
 # ============================================================================
 
+# Each palette has:
+#   sky_top / sky_mid  – sky gradient bands (top → horizon)
+#   ground_dark / ground_light – ground strip
+#   glow               – warm horizon ellipse
+#   cloud              – cloud puffs
+#   sun / sun_inner    – sun disc colours
+#   card_bg            – title card background
+#   card_border        – top rule of title card
+#   badge_bg / badge_text – series pill
+#   title / sub        – title & subtitle text
+#   footer_bg / footer_text – bottom strip
+
 PALETTES = {
+    # Book 1 – cyber: twilight blues → warm amber glow
     'cyber': {
-        'bg': (0.87, 0.93, 0.98), 'accent': (0.13, 0.24, 0.42),
-        'circle': (0.78, 0.88, 0.96), 'ground': (0.10, 0.19, 0.34),
-        'title': (0.11, 0.20, 0.36), 'sub': (0.27, 0.36, 0.50),
+        'sky_top':      (0.16, 0.22, 0.44),
+        'sky_mid':      (0.52, 0.62, 0.82),
+        'ground_dark':  (0.12, 0.17, 0.32),
+        'ground_light': (0.22, 0.30, 0.50),
+        'glow':         (0.94, 0.74, 0.44),
+        'cloud':        (0.68, 0.74, 0.90),
+        'sun':          (0.98, 0.84, 0.46),
+        'sun_inner':    (0.99, 0.92, 0.66),
+        'card_bg':      (0.97, 0.96, 0.92),
+        'card_border':  (0.22, 0.34, 0.62),
+        'badge_bg':     (0.22, 0.34, 0.62),
+        'badge_text':   (1.0, 1.0, 1.0),
+        'title':        (0.14, 0.22, 0.44),
+        'sub':          (0.34, 0.40, 0.56),
+        'footer_bg':    (0.22, 0.34, 0.62),
+        'footer_text':  (0.90, 0.94, 1.0),
     },
+    # Book 2 – herbs: warm golden morning, lush greens
     'herbs': {
-        'bg': (0.89, 0.95, 0.85), 'accent': (0.24, 0.46, 0.27),
-        'circle': (0.80, 0.90, 0.74), 'ground': (0.18, 0.36, 0.20),
-        'title': (0.18, 0.38, 0.22), 'sub': (0.30, 0.44, 0.30),
+        'sky_top':      (0.52, 0.74, 0.90),
+        'sky_mid':      (0.94, 0.84, 0.62),
+        'ground_dark':  (0.28, 0.48, 0.24),
+        'ground_light': (0.46, 0.66, 0.34),
+        'glow':         (0.99, 0.94, 0.68),
+        'cloud':        (0.99, 0.98, 0.92),
+        'sun':          (0.99, 0.84, 0.30),
+        'sun_inner':    (0.99, 0.96, 0.72),
+        'card_bg':      (0.98, 0.96, 0.88),
+        'card_border':  (0.30, 0.52, 0.24),
+        'badge_bg':     (0.30, 0.52, 0.24),
+        'badge_text':   (1.0, 1.0, 1.0),
+        'title':        (0.22, 0.40, 0.18),
+        'sub':          (0.36, 0.50, 0.28),
+        'footer_bg':    (0.30, 0.52, 0.24),
+        'footer_text':  (0.92, 0.98, 0.86),
     },
+    # Book 3 – cooking: warm terracotta kitchen noon
     'cooking': {
-        'bg': (0.99, 0.93, 0.81), 'accent': (0.80, 0.42, 0.22),
-        'circle': (0.99, 0.86, 0.66), 'ground': (0.62, 0.31, 0.15),
-        'title': (0.66, 0.33, 0.15), 'sub': (0.52, 0.34, 0.22),
+        'sky_top':      (0.96, 0.86, 0.68),
+        'sky_mid':      (0.99, 0.94, 0.80),
+        'ground_dark':  (0.54, 0.28, 0.14),
+        'ground_light': (0.76, 0.46, 0.24),
+        'glow':         (1.00, 0.90, 0.60),
+        'cloud':        (1.00, 0.96, 0.88),
+        'sun':          (0.98, 0.72, 0.26),
+        'sun_inner':    (1.00, 0.90, 0.54),
+        'card_bg':      (0.99, 0.96, 0.88),
+        'card_border':  (0.76, 0.36, 0.16),
+        'badge_bg':     (0.76, 0.36, 0.16),
+        'badge_text':   (1.0, 1.0, 1.0),
+        'title':        (0.56, 0.24, 0.10),
+        'sub':          (0.60, 0.38, 0.22),
+        'footer_bg':    (0.76, 0.36, 0.16),
+        'footer_text':  (1.00, 0.94, 0.84),
     },
+    # Book 4 – finance: calm teal sea morning
     'finance': {
-        'bg': (0.86, 0.93, 0.95), 'accent': (0.16, 0.42, 0.50),
-        'circle': (0.76, 0.89, 0.92), 'ground': (0.10, 0.30, 0.36),
-        'title': (0.11, 0.33, 0.39), 'sub': (0.25, 0.42, 0.47),
+        'sky_top':      (0.46, 0.70, 0.82),
+        'sky_mid':      (0.80, 0.92, 0.96),
+        'ground_dark':  (0.14, 0.36, 0.44),
+        'ground_light': (0.26, 0.54, 0.62),
+        'glow':         (0.96, 0.88, 0.60),
+        'cloud':        (0.96, 0.99, 1.00),
+        'sun':          (0.98, 0.88, 0.42),
+        'sun_inner':    (0.99, 0.96, 0.72),
+        'card_bg':      (0.96, 0.98, 0.96),
+        'card_border':  (0.16, 0.44, 0.54),
+        'badge_bg':     (0.16, 0.44, 0.54),
+        'badge_text':   (1.0, 1.0, 1.0),
+        'title':        (0.10, 0.30, 0.40),
+        'sub':          (0.26, 0.44, 0.52),
+        'footer_bg':    (0.16, 0.44, 0.54),
+        'footer_text':  (0.88, 0.96, 0.98),
     },
+    # Book 5 – exercise: lavender sunrise, energetic
     'exercise': {
-        'bg': (0.93, 0.88, 0.96), 'accent': (0.45, 0.34, 0.62),
-        'circle': (0.87, 0.80, 0.93), 'ground': (0.33, 0.24, 0.48),
-        'title': (0.36, 0.26, 0.52), 'sub': (0.45, 0.38, 0.56),
+        'sky_top':      (0.56, 0.42, 0.74),
+        'sky_mid':      (0.88, 0.80, 0.96),
+        'ground_dark':  (0.34, 0.26, 0.50),
+        'ground_light': (0.56, 0.46, 0.72),
+        'glow':         (0.99, 0.88, 0.66),
+        'cloud':        (0.96, 0.94, 0.99),
+        'sun':          (0.99, 0.82, 0.40),
+        'sun_inner':    (1.00, 0.94, 0.70),
+        'card_bg':      (0.98, 0.96, 0.99),
+        'card_border':  (0.50, 0.36, 0.72),
+        'badge_bg':     (0.50, 0.36, 0.72),
+        'badge_text':   (1.0, 1.0, 1.0),
+        'title':        (0.34, 0.22, 0.54),
+        'sub':          (0.50, 0.40, 0.62),
+        'footer_bg':    (0.50, 0.36, 0.72),
+        'footer_text':  (0.94, 0.90, 1.00),
     },
 }
 
+# ── shared drawing helpers ────────────────────────────────────────────────────
 
-def _scene_cyber(pdf, pal):
-    # A person at a laptop, guarded by a large shield with a checkmark.
-    pdf.person(232, 168, f=1.25, shirt=(0.20, 0.35, 0.62),
-               pants=(0.22, 0.24, 0.30), hair=(0.5, 0.5, 0.55), pose='stand')
-    # laptop on a little stand in front of the person
-    pdf.rect_rgb(196, 150, 74, 10, (0.30, 0.32, 0.38))      # base
-    pdf.polygon([(204, 160), (262, 160), (256, 196), (210, 196)],
-                fill=(0.85, 0.90, 0.96), stroke=(0.30, 0.32, 0.38), lw=2)
-    # shield
-    sx, sy = 408, 326
-    pdf.polygon([(sx - 46, sy + 54), (sx + 46, sy + 54), (sx + 46, sy - 14),
-                 (sx, sy - 58), (sx - 46, sy - 14)],
-                fill=(0.20, 0.52, 0.80), stroke=(1, 1, 1), lw=4)
-    pdf.polyline([(sx - 20, sy + 14), (sx - 4, sy - 4), (sx + 24, sy + 34)],
-                 width=8, color=(1, 1, 1))
+def _cloud(pdf, cx, cy, s=1.0, col=(0.99, 0.98, 0.92)):
+    """Draw one puffy cloud at (cx,cy) with scale s."""
+    for dx, r in ((-26*s, 18*s), (-8*s, 24*s), (12*s, 20*s), (28*s, 16*s)):
+        pdf.circle(cx + dx, cy, r, fill=col)
+
+def _bush(pdf, cx, cy, col=(0.36, 0.58, 0.28), dark=None):
+    """Three overlapping circles making a leafy bush."""
+    dark = dark or (col[0]*0.82, col[1]*0.82, col[2]*0.82)
+    pdf.circle(cx - 16, cy, 14, fill=dark)
+    pdf.circle(cx + 16, cy, 14, fill=dark)
+    pdf.circle(cx,      cy + 10, 18, fill=col)
+
+def _window(pdf, x, y, w=44, h=36, frame=(0.70, 0.55, 0.38),
+            glass=(0.72, 0.88, 0.96)):
+    """A simple house window with cross mullion."""
+    pdf.rect_rgb(x, y, w, h, glass)
+    pdf.rect_rgb(x, y, w, h, frame)           # outer frame (draw twice for effect)
+    # cross
+    pdf.thick_line(x + w/2, y, x + w/2, y + h, 3, frame)
+    pdf.thick_line(x, y + h/2, x + w, y + h/2, 3, frame)
+
+def _pot(pdf, cx, base, col=(0.74, 0.38, 0.22), herb_col=(0.34, 0.62, 0.28)):
+    """A terracotta pot with lush foliage."""
+    # rim
+    pdf.rect_rgb(cx - 20, base + 38, 40, 7, (col[0]*0.88, col[1]*0.82, col[2]*0.78))
+    # body (trapezoid)
+    pdf.polygon(
+        [(cx-18, base+38),(cx+18, base+38),(cx+12, base),(cx-12, base)],
+        fill=col
+    )
+    # three foliage circles
+    dark_h = (herb_col[0]*0.80, herb_col[1]*0.80, herb_col[2]*0.80)
+    pdf.circle(cx,      base + 58, 15, fill=dark_h)
+    pdf.circle(cx - 12, base + 52, 11, fill=herb_col)
+    pdf.circle(cx + 12, base + 52, 11, fill=herb_col)
+    pdf.circle(cx,      base + 66, 12, fill=herb_col)
+
+# ── scene 1: cyber / anti-scam ───────────────────────────────────────────────
+
+def _scene_cyber(pdf, p):
+    """
+    An older man seated at a laptop. A large glowing shield floats on the
+    right with a warm gold lock on it. Warm lamplight fills the scene.
+    """
+    skin  = (0.97, 0.78, 0.62)
+    hair  = (0.72, 0.68, 0.64)   # silver-white hair
+    shirt = (0.28, 0.44, 0.72)
+    pants = (0.24, 0.26, 0.42)
+    shoe  = (0.18, 0.16, 0.14)
+
+    # ── desk ─────────────────────────────────────────────────────────────
+    pdf.rect_rgb(100, 184, 260, 14, (0.60, 0.40, 0.22))  # desk top
+    pdf.rect_rgb(112, 152, 16, 32,  (0.50, 0.32, 0.16))  # left leg
+    pdf.rect_rgb(332, 152, 16, 32,  (0.50, 0.32, 0.16))  # right leg
+
+    # ── laptop on desk ───────────────────────────────────────────────────
+    # screen
+    pdf.polygon([(168, 198),(284, 198),(278, 260),(174, 260)],
+                fill=(0.18, 0.20, 0.28), stroke=(0.38, 0.40, 0.50), lw=2)
+    pdf.polygon([(172, 202),(280, 202),(274, 256),(178, 256)],
+                fill=(0.22, 0.58, 0.82))  # screen glow
+    # display content: a little padlock icon on screen
+    lx, ly = 226, 228
+    pdf.rect_rgb(lx-8, ly-6, 16, 14, (0.95, 0.88, 0.40))
+    pdf.ellipse(lx, ly+10, 7, 7, fill=None, stroke=(0.95, 0.88, 0.40), lw=3)
+    # base of laptop
+    pdf.rect_rgb(168, 194, 116, 6, (0.32, 0.34, 0.40))
+    pdf.rect_rgb(160, 192, 130, 5, (0.40, 0.42, 0.50))
+
+    # ── seated person ────────────────────────────────────────────────────
+    info = pdf.person(196, 152, f=1.0, shirt=shirt, pants=pants, skin=skin,
+                      hair=hair, shoe=shoe, pose='sit', gender='m')
+
+    # ── chair ────────────────────────────────────────────────────────────
+    pdf.rect_rgb(154, 152, 84, 8,  (0.52, 0.36, 0.20))   # seat
+    pdf.rect_rgb(228, 152, 10, 44, (0.52, 0.36, 0.20))   # right leg
+    pdf.rect_rgb(154, 152, 10, 44, (0.52, 0.36, 0.20))   # left leg
+
+    # ── shield (right side) ──────────────────────────────────────────────
+    sx, sy = 430, 306
+    # outer shield glow
+    pdf.polygon(
+        [(sx-52,sy+62),(sx+52,sy+62),(sx+52,sy-10),(sx,sy-66),(sx-52,sy-10)],
+        fill=(0.98, 0.84, 0.44)
+    )
+    # inner shield
+    pdf.polygon(
+        [(sx-42,sy+50),(sx+42,sy+50),(sx+42,sy-4),(sx,sy-54),(sx-42,sy-4)],
+        fill=(0.22, 0.38, 0.72)
+    )
+    # checkmark on shield
+    pdf.polyline(
+        [(sx-22, sy+18),(sx-4, sy-4),(sx+26, sy+32)],
+        width=9, color=(0.98, 0.96, 0.88)
+    )
+
+    # ── warm desk lamp ───────────────────────────────────────────────────
+    pdf.thick_line(330, 198, 330, 240, 5, (0.70, 0.54, 0.30))
+    pdf.thick_line(330, 240, 348, 254, 5, (0.70, 0.54, 0.30))
+    pdf.circle(350, 258, 10, fill=(0.98, 0.90, 0.50))  # lamp shade
+    # lamp glow halo
+    pdf.ellipse(350, 252, 22, 12, fill=(0.99, 0.96, 0.78))
+    pdf.circle(350, 258, 10, fill=(0.98, 0.90, 0.50))
+
+    # ── small bush on ground ─────────────────────────────────────────────
+    _bush(pdf, 66, 190, col=(0.32, 0.52, 0.28))
 
 
-def _scene_herbs(pdf, pal):
-    # A gardener tending a row of potted herbs.
-    info = pdf.person(196, 168, f=1.2, shirt=(0.32, 0.55, 0.33),
-                      pants=(0.40, 0.30, 0.22), hair=(0.62, 0.62, 0.6),
-                      pose='wave')
-    # watering can in the raised hand
+# ── scene 2: herb garden ─────────────────────────────────────────────────────
+
+def _scene_herbs(pdf, p):
+    """
+    A cheerful woman watering a row of potted herbs on a sunny terrace.
+    """
+    skin  = (0.98, 0.80, 0.62)
+    hair  = (0.54, 0.36, 0.18)   # warm auburn
+    shirt = (0.30, 0.60, 0.40)   # garden green
+    pants = (0.46, 0.34, 0.22)   # earthy brown
+    shoe  = (0.30, 0.20, 0.14)
+
+    # ── stone terrace wall ────────────────────────────────────────────────
+    pdf.rect_rgb(0, 172, 612, 14, (0.76, 0.68, 0.58))
+    # stone texture: horizontal lines
+    for tx in range(60, 560, 80):
+        pdf.thick_line(tx, 172, tx + 66, 172, 2, (0.64, 0.56, 0.46))
+
+    # ── gardener ─────────────────────────────────────────────────────────
+    info = pdf.person(168, 186, f=1.08, shirt=shirt, pants=pants, skin=skin,
+                      hair=hair, shoe=shoe, pose='wave', gender='f')
+
+    # ── watering can ─────────────────────────────────────────────────────
     hx, hy = info['hand_r']
-    pdf.rect_rgb(hx - 6, hy - 8, 26, 18, (0.55, 0.60, 0.66))
-    pdf.polyline([(hx + 20, hy + 6), (hx + 34, hy + 14)], width=4,
-                 color=(0.55, 0.60, 0.66))
-    # three terracotta pots with green herbs on the ground band
-    for px in (336, 398, 460):
-        pdf.polygon([(px - 22, 184), (px + 22, 184), (px + 15, 152),
-                     (px - 15, 152)], fill=(0.78, 0.43, 0.28))
-        pdf.rect_rgb(px - 24, 182, 48, 7, (0.68, 0.36, 0.23))   # rim
-        # foliage
-        pdf.circle(px, 200, 14, fill=(0.30, 0.58, 0.32))
-        pdf.circle(px - 12, 194, 10, fill=(0.36, 0.64, 0.36))
-        pdf.circle(px + 12, 194, 10, fill=(0.26, 0.52, 0.28))
-        pdf.thick_line(px, 184, px, 198, 3, (0.30, 0.45, 0.25))
+    # can body
+    pdf.ellipse(hx + 12, hy + 6, 18, 12, fill=(0.46, 0.56, 0.66))
+    # spout
+    pdf.polyline([(hx + 28, hy + 10), (hx + 52, hy - 2),
+                  (hx + 64, hy + 4)], width=5, color=(0.38, 0.48, 0.58))
+    # handle arc (two lines)
+    pdf.thick_line(hx + 14, hy + 16, hx + 8, hy + 24, 4, (0.38, 0.48, 0.58))
+    pdf.thick_line(hx + 8, hy + 24, hx + 16, hy + 30, 4, (0.38, 0.48, 0.58))
+    # water drops
+    for di, wdx in enumerate((-2, 0, 2)):
+        pdf.circle(hx + 66 + wdx, hy + 4 - di * 8, 2.5,
+                   fill=(0.60, 0.78, 0.92))
+
+    # ── four potted herbs ─────────────────────────────────────────────────
+    herbs = [
+        (300, 186, (0.74, 0.38, 0.22), (0.34, 0.64, 0.28)),  # basil
+        (358, 186, (0.78, 0.42, 0.24), (0.28, 0.54, 0.24)),  # rosemary
+        (416, 186, (0.72, 0.36, 0.20), (0.42, 0.68, 0.30)),  # thyme
+        (474, 186, (0.76, 0.40, 0.22), (0.36, 0.60, 0.26)),  # mint
+    ]
+    herb_names = ['Basil', 'Rosemary', 'Thyme', 'Mint']
+    for (px, py, pc, hc), name in zip(herbs, herb_names):
+        _pot(pdf, px, py, col=pc, herb_col=hc)
+        pdf.draw_text_centered(py - 6, name, 7.5,
+                               color=(0.34, 0.26, 0.14))
+
+    # ── small garden butterfly ────────────────────────────────────────────
+    bx, by = 520, 370
+    pdf.ellipse(bx - 12, by + 6,  11, 7, fill=(0.92, 0.60, 0.22))
+    pdf.ellipse(bx + 12, by + 6,  11, 7, fill=(0.92, 0.60, 0.22))
+    pdf.ellipse(bx - 8,  by - 4,   8, 5, fill=(0.98, 0.80, 0.36))
+    pdf.ellipse(bx + 8,  by - 4,   8, 5, fill=(0.98, 0.80, 0.36))
+    pdf.thick_line(bx, by - 8, bx, by + 14, 2, (0.28, 0.22, 0.14))
+
+    # ── sunshine rays around the sun ──────────────────────────────────────
+    for angle_i in range(8):
+        import math
+        a = angle_i * math.pi / 4
+        rx1, ry1 = 506 + 66*math.cos(a), 664 + 66*math.sin(a)
+        rx2, ry2 = 506 + 82*math.cos(a), 664 + 82*math.sin(a)
+        pdf.thick_line(rx1, ry1, rx2, ry2, 3, (0.98, 0.86, 0.42))
 
 
-def _scene_cooking(pdf, pal):
-    # Two friendly cooks beside a steaming pot (cooking for two, or one).
-    pdf.person(180, 168, f=1.12, shirt=(0.85, 0.48, 0.28),
-               pants=(0.40, 0.30, 0.26), hair=(0.6, 0.6, 0.6), pose='stand')
-    pdf.person(286, 168, f=1.12, shirt=(0.55, 0.62, 0.40),
-               pants=(0.30, 0.32, 0.38), hair=(0.55, 0.5, 0.5), pose='stand')
-    # cooking pot on the right
-    px, py = 432, 168
-    pdf.ellipse(px, py + 38, 42, 12, fill=(0.40, 0.42, 0.48))      # rim top
-    pdf.rect_rgb(px - 42, py - 6, 84, 44, (0.34, 0.36, 0.42))      # body
-    pdf.ellipse(px, py - 6, 42, 11, fill=(0.28, 0.30, 0.36))       # bottom curve
-    pdf.thick_line(px - 54, py + 30, px - 44, py + 30, 7, (0.34, 0.36, 0.42))
-    pdf.thick_line(px + 44, py + 30, px + 54, py + 30, 7, (0.34, 0.36, 0.42))
-    # steam
-    for dx in (-14, 0, 14):
-        pdf.polyline([(px + dx, py + 50), (px + dx + 8, py + 64),
-                      (px + dx - 6, py + 78), (px + dx + 6, py + 92)],
-                     width=4, color=(0.95, 0.95, 0.95))
+# ── scene 3: cooking for two ──────────────────────────────────────────────────
+
+def _scene_cooking(pdf, p):
+    """
+    A cosy kitchen counter. Two friends cooking together with a steaming pot,
+    vegetables, and a warm tiled backdrop.
+    """
+    skin1  = (0.96, 0.76, 0.58)   # person 1
+    hair1  = (0.28, 0.20, 0.14)
+    shirt1 = (0.80, 0.38, 0.22)   # warm red apron
+    pants1 = (0.38, 0.32, 0.52)
+    shoe1  = (0.20, 0.16, 0.12)
+
+    skin2  = (0.82, 0.62, 0.46)   # person 2, darker tone
+    hair2  = (0.16, 0.12, 0.10)
+    shirt2 = (0.38, 0.58, 0.40)
+    pants2 = (0.28, 0.30, 0.44)
+    shoe2  = (0.18, 0.16, 0.12)
+
+    # ── kitchen tile wall ─────────────────────────────────────────────────
+    pdf.rect_rgb(0, 298, 612, 100, (0.96, 0.92, 0.86))
+    for tx in range(0, 612, 40):
+        for ty in range(298, 398, 32):
+            pdf.thick_line(tx, ty, tx + 40, ty, 1, (0.84, 0.80, 0.74))
+    for tx in range(0, 612, 40):
+        pdf.thick_line(tx, 298, tx, 398, 1, (0.84, 0.80, 0.74))
+
+    # ── kitchen counter ───────────────────────────────────────────────────
+    pdf.rect_rgb(0, 196, 612, 18, (0.84, 0.70, 0.52))   # counter top
+    pdf.rect_rgb(0, 152, 612, 44, (0.62, 0.46, 0.32))   # counter body
+
+    # ── cutting board with veg ────────────────────────────────────────────
+    pdf.rect_rgb(96, 196, 88, 12, (0.82, 0.64, 0.42))   # cutting board
+    # three vegetable circles (tomato, courgette, carrot)
+    for vx, vc in ((110, (0.88, 0.30, 0.24)), (128, (0.42, 0.68, 0.32)),
+                   (146, (0.92, 0.56, 0.22))):
+        pdf.circle(vx, 204, 7, fill=vc)
+
+    # ── people ────────────────────────────────────────────────────────────
+    pdf.person(174, 214, f=1.02, shirt=shirt1, pants=pants1, skin=skin1,
+               hair=hair1, shoe=shoe1, pose='stand', gender='f')
+    pdf.person(312, 214, f=1.02, shirt=shirt2, pants=pants2, skin=skin2,
+               hair=hair2, shoe=shoe2, pose='wave', gender='m')
+
+    # ── large cooking pot ─────────────────────────────────────────────────
+    px, py = 456, 196
+    # pot body
+    pdf.ellipse(px, py + 42, 46, 14, fill=(0.38, 0.40, 0.48))  # top rim
+    pdf.rect_rgb(px - 46, py, 92, 44, (0.32, 0.34, 0.42))
+    pdf.ellipse(px, py, 46, 12, fill=(0.26, 0.28, 0.36))        # base curve
+    # handles
+    pdf.thick_line(px - 58, py + 32, px - 47, py + 32, 8, (0.32, 0.34, 0.42))
+    pdf.thick_line(px + 47, py + 32, px + 58, py + 32, 8, (0.32, 0.34, 0.42))
+    # lid
+    pdf.ellipse(px, py + 46, 46, 14, fill=(0.46, 0.48, 0.56))
+    pdf.circle(px, py + 60, 6, fill=(0.58, 0.60, 0.68))         # lid knob
+    # steam wisps (wavy S curves approximated by polylines)
+    for dx in (-18, 0, 18):
+        pdf.polyline(
+            [(px+dx, py+66), (px+dx+8, py+82), (px+dx-6, py+98), (px+dx+6, py+114)],
+            width=4, color=(0.96, 0.94, 0.90)
+        )
+
+    # ── window behind ─────────────────────────────────────────────────────
+    _window(pdf, 520, 328, w=58, h=46)
+    # view through window: little sun
+    pdf.circle(549, 368, 9, fill=(0.99, 0.88, 0.40))
+
+    # ── recipe card on counter ────────────────────────────────────────────
+    pdf.rect_rgb(380, 198, 52, 10, (0.98, 0.96, 0.88))
+    pdf.thick_line(386, 202, 426, 202, 1, (0.76, 0.72, 0.66))
+    pdf.thick_line(386, 205, 426, 205, 1, (0.76, 0.72, 0.66))
 
 
-def _scene_finance(pdf, pal):
-    # A person beside a growing stack of coins and a savings jar.
-    pdf.person(214, 168, f=1.22, shirt=(0.20, 0.46, 0.54),
-               pants=(0.25, 0.27, 0.33), hair=(0.55, 0.55, 0.58), pose='stand')
-    # coin stack
-    cx = 404
-    for i, cy in enumerate((168, 184, 200, 216)):
-        w = 38 - i * 2
-        pdf.ellipse(cx, cy, w, 11, fill=(0.93, 0.76, 0.30),
-                    stroke=(0.75, 0.58, 0.18), lw=1.5)
-        pdf.draw_text_centered(cy - 5, "$", 13, bold=True,
-                               color=(0.6, 0.45, 0.10))
-    # savings jar to the right
-    jx = 478
-    pdf.rect_rgb(jx - 26, 152, 52, 60, (0.80, 0.90, 0.93))
-    pdf.rect_rgb(jx - 26, 206, 52, 8, (0.55, 0.62, 0.66))     # lid
-    pdf.ellipse(jx, 176, 12, 12, fill=(0.93, 0.76, 0.30))     # a coin inside
-    pdf.draw_text_centered(171, "$", 12, bold=True, color=(0.6, 0.45, 0.10))
+# ── scene 4: smart money ──────────────────────────────────────────────────────
+
+def _scene_finance(pdf, p):
+    """
+    A relaxed older woman at a desk with a laptop, a piggy bank and rising
+    coin stacks. Morning light through a window.
+    """
+    skin  = (0.96, 0.76, 0.58)
+    hair  = (0.74, 0.70, 0.66)   # silver
+    shirt = (0.28, 0.52, 0.58)
+    pants = (0.22, 0.26, 0.44)
+    shoe  = (0.18, 0.16, 0.14)
+
+    # ── desk surface ──────────────────────────────────────────────────────
+    pdf.rect_rgb(62, 192, 380, 14, (0.62, 0.44, 0.26))
+    pdf.rect_rgb(74,  152, 14, 40, (0.50, 0.34, 0.18))
+    pdf.rect_rgb(414, 152, 14, 40, (0.50, 0.34, 0.18))
+
+    # ── laptop (open) ─────────────────────────────────────────────────────
+    pdf.polygon([(102,206),(214,206),(208,256),(108,256)],
+                fill=(0.18, 0.20, 0.28), stroke=(0.38, 0.40, 0.50), lw=2)
+    pdf.polygon([(106,210),(210,210),(204,252),(112,252)],
+                fill=(0.22, 0.60, 0.78))
+    # dollar sign on screen
+    pdf.draw_text_centered(232, "$", 18, bold=True, color=(0.98, 0.92, 0.40))
+    # base
+    pdf.rect_rgb(102, 202, 112, 6, (0.30, 0.32, 0.40))
+    pdf.rect_rgb(94,  200, 128, 5, (0.40, 0.42, 0.50))
+
+    # ── seated person ─────────────────────────────────────────────────────
+    info = pdf.person(174, 152, f=0.98, shirt=shirt, pants=pants, skin=skin,
+                      hair=hair, shoe=shoe, pose='sit', gender='f')
+
+    # ── chair ─────────────────────────────────────────────────────────────
+    pdf.rect_rgb(132, 152, 84, 8,  (0.50, 0.34, 0.18))
+    pdf.rect_rgb(208, 152, 10, 44, (0.50, 0.34, 0.18))
+    pdf.rect_rgb(132, 152, 10, 44, (0.50, 0.34, 0.18))
+
+    # ── piggy bank ────────────────────────────────────────────────────────
+    pbx, pby = 370, 228
+    # body
+    pdf.ellipse(pbx, pby, 34, 26, fill=(0.96, 0.72, 0.74))
+    # snout
+    pdf.ellipse(pbx + 32, pby - 4, 10, 8, fill=(0.92, 0.64, 0.68))
+    pdf.circle(pbx + 30, pby - 5, 2.5, fill=(0.74, 0.46, 0.52))
+    pdf.circle(pbx + 35, pby - 5, 2.5, fill=(0.74, 0.46, 0.52))
+    # eye
+    pdf.circle(pbx + 16, pby + 10, 3, fill=(0.22, 0.16, 0.14))
+    pdf.circle(pbx + 17, pby + 11, 1, fill=(1, 1, 1))
+    # coin slot on top
+    pdf.thick_line(pbx - 6, pby + 24, pbx + 6, pby + 24, 3, (0.74, 0.52, 0.56))
+    # legs
+    for legx in (pbx - 20, pbx - 6, pbx + 8, pbx + 22):
+        pdf.thick_line(legx, pby - 22, legx, pby - 14, 5, (0.92, 0.68, 0.70))
+    # ear
+    pdf.ellipse(pbx - 24, pby + 18, 8, 10, fill=(0.96, 0.72, 0.74))
+    # tail curl
+    pdf.polyline([(pbx-32, pby-2),(pbx-38, pby+6),(pbx-34, pby+12)],
+                 width=3, color=(0.88, 0.62, 0.66))
+
+    # ── three rising coin stacks ───────────────────────────────────────────
+    gold = (0.94, 0.76, 0.28)
+    gold_d = (0.78, 0.58, 0.16)
+    for i, (scx, n_coins) in enumerate(((448, 2), (486, 4), (524, 6))):
+        for ci in range(n_coins):
+            cy = 192 + ci * 9
+            pdf.ellipse(scx, cy, 14, 5, fill=gold, stroke=gold_d, lw=1)
+
+    # ── window with morning sun ────────────────────────────────────────────
+    _window(pdf, 488, 328, w=60, h=48)
+    pdf.circle(518, 370, 10, fill=(0.99, 0.88, 0.40))
+
+    # ── small plant on desk ────────────────────────────────────────────────
+    _pot(pdf, 434, 192, col=(0.72, 0.38, 0.22),
+         herb_col=(0.36, 0.62, 0.28))
 
 
-def _scene_exercise(pdf, pal):
-    # A person stretching upward, with a small heart for healthy living.
-    pdf.person(300, 168, f=1.28, shirt=(0.46, 0.35, 0.64),
-               pants=(0.30, 0.32, 0.40), hair=(0.6, 0.6, 0.62), pose='arms_up')
-    # a calm second figure seated nearby on the ground (suggested with a dot)
-    pdf.circle(196, 252, 11, fill=(0.98, 0.80, 0.66))        # head
-    pdf.thick_line(196, 220, 196, 244, 22, (0.55, 0.50, 0.70))  # seated body
-    pdf.thick_line(196, 222, 222, 214, 9, (0.55, 0.50, 0.70))   # leg
-    # heart above the stretcher
-    hx, hy = 300, 360
-    pdf.circle(hx - 9, hy + 4, 9, fill=(0.85, 0.32, 0.42))
-    pdf.circle(hx + 9, hy + 4, 9, fill=(0.85, 0.32, 0.42))
-    pdf.polygon([(hx - 17, hy + 6), (hx + 17, hy + 6), (hx, hy - 16)],
-                fill=(0.85, 0.32, 0.42))
+# ── scene 5: exercise / staying strong ───────────────────────────────────────
+
+def _scene_exercise(pdf, p):
+    """
+    Two people: one standing doing arm raises, one seated stretching.
+    A warm sunrise park setting with a tree, path, and a heart badge.
+    """
+    skin1  = (0.97, 0.78, 0.60)
+    hair1  = (0.68, 0.64, 0.60)   # silver
+    shirt1 = (0.44, 0.34, 0.68)
+    pants1 = (0.26, 0.28, 0.44)
+    shoe1  = (0.20, 0.18, 0.14)
+
+    skin2  = (0.90, 0.70, 0.54)
+    hair2  = (0.18, 0.14, 0.12)
+    shirt2 = (0.28, 0.56, 0.52)
+    pants2 = (0.30, 0.32, 0.48)
+    shoe2  = (0.20, 0.18, 0.14)
+
+    # ── park path ─────────────────────────────────────────────────────────
+    pdf.polygon(
+        [(200, 152),(380, 152),(460, 192),(120, 192)],
+        fill=(0.82, 0.76, 0.64)
+    )
+    # path edging
+    pdf.thick_line(200, 152, 120, 192, 2, (0.68, 0.62, 0.50))
+    pdf.thick_line(380, 152, 460, 192, 2, (0.68, 0.62, 0.50))
+
+    # ── tree (left) ───────────────────────────────────────────────────────
+    # trunk
+    pdf.rect_rgb(76, 152, 22, 100, (0.54, 0.36, 0.20))
+    # canopy: three overlapping circles
+    pdf.circle(87, 278, 34, fill=(0.28, 0.52, 0.26))
+    pdf.circle(68, 266, 28, fill=(0.32, 0.58, 0.28))
+    pdf.circle(106,266, 28, fill=(0.32, 0.58, 0.28))
+    pdf.circle(87, 294, 24, fill=(0.36, 0.62, 0.30))
+
+    # ── standing person (arms up) ─────────────────────────────────────────
+    pdf.person(280, 192, f=1.14, shirt=shirt1, pants=pants1, skin=skin1,
+               hair=hair1, shoe=shoe1, pose='arms_up', gender='f')
+
+    # ── seated person (stretch) on a park bench ────────────────────────────
+    # bench
+    pdf.rect_rgb(394, 192, 110, 10, (0.62, 0.44, 0.26))
+    pdf.rect_rgb(398, 152, 10, 40,  (0.52, 0.36, 0.18))
+    pdf.rect_rgb(490, 152, 10, 40,  (0.52, 0.36, 0.18))
+    pdf.rect_rgb(394, 226, 110, 6,  (0.62, 0.44, 0.26))   # back rest
+
+    info2 = pdf.person(446, 202, f=0.92, shirt=shirt2, pants=pants2, skin=skin2,
+                       hair=hair2, shoe=shoe2, pose='sit', gender='m')
+
+    # ── warm heart badge floating up ─────────────────────────────────────
+    hx, hy = 280, 378
+    # glow
+    pdf.circle(hx, hy, 24, fill=(1.00, 0.88, 0.88))
+    # heart shape: two circles + triangle
+    pdf.circle(hx - 10, hy + 6, 11, fill=(0.88, 0.28, 0.38))
+    pdf.circle(hx + 10, hy + 6, 11, fill=(0.88, 0.28, 0.38))
+    pdf.polygon(
+        [(hx - 20, hy + 8),(hx + 20, hy + 8),(hx, hy - 16)],
+        fill=(0.88, 0.28, 0.38)
+    )
+
+    # ── small flowers on the ground ────────────────────────────────────────
+    for fx, fy in ((158, 194),(180, 196),(530, 194),(552, 196)):
+        pdf.circle(fx, fy, 5, fill=(0.98, 0.86, 0.30))
+        for da in range(6):
+            import math
+            a = da * math.pi / 3
+            pdf.circle(fx + 7*math.cos(a), fy + 7*math.sin(a), 3.5,
+                       fill=(1.00, 0.94, 0.62))
 
 
 SCENES = {
-    'cyber': _scene_cyber,
-    'herbs': _scene_herbs,
-    'cooking': _scene_cooking,
-    'finance': _scene_finance,
+    'cyber':    _scene_cyber,
+    'herbs':    _scene_herbs,
+    'cooking':  _scene_cooking,
+    'finance':  _scene_finance,
     'exercise': _scene_exercise,
 }
