@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Short: Start Saving NOW 💰</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            overflow: hidden;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 667px;
+            border-radius: 40px;
+            border: 4px solid #333;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+        }
+
+        .video-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Scenes */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .scene.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .scene-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Scene specific backgrounds with video-like gradients and animations */
+        .scene-1 .scene-bg {
+            background: linear-gradient(135deg, #ff6b35, #f7c948, #ff6b35);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .scene-2 .scene-bg {
+            background: linear-gradient(180deg, #87CEEB, #f4a460, #ff6347);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+        }
+
+        .scene-3 .scene-bg {
+            background: linear-gradient(90deg, #1a1a2e, #16213e, #0f3460);
+            animation: gradientShift 2s ease infinite;
+            background-size: 300% 300%;
+        }
+
+        .scene-4 .scene-bg {
+            background: linear-gradient(135deg, #00b4d8, #0077b6, #023e8a);
+            background-size: 300% 300%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .scene-5 .scene-bg {
+            background: linear-gradient(180deg, #2d6a4f, #40916c, #95d5b2, #d4af37);
+            background-size: 200% 200%;
+            animation: gradientShift 2s ease infinite;
+        }
+
+        .scene-6 .scene-bg {
+            background: linear-gradient(135deg, #ff006e, #fb5607, #ffbe0b);
+            background-size: 400% 400%;
+            animation: gradientShift 1.5s ease infinite;
+        }
+
+        .scene-7 .scene-bg {
+            background: linear-gradient(180deg, #2b2d42, #3d405b, #5c677d);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .scene-8 .scene-bg {
+            background: linear-gradient(135deg, #ff9500, #ff5e3a, #c62828);
+            background-size: 300% 300%;
+            animation: gradientShift 2s ease infinite;
+        }
+
+        .scene-9 .scene-bg {
+            background: linear-gradient(180deg, #6a0dad, #9b59b6, #e74c3c);
+            background-size: 300% 300%;
+            animation: gradientShift 1.5s ease infinite;
+        }
+
+        .scene-10 .scene-bg {
+            background: linear-gradient(180deg, #ff6b35, #000);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated visual elements per scene */
+        .visual-element {
+            position: absolute;
+            font-size: 60px;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-1deg); }
+            75% { transform: translateX(5px) rotate(1deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes flashWhite {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        .scene-icon {
+            font-size: 80px;
+            position: absolute;
+            animation: zoomIn 0.5s ease forwards;
+        }
+
+        .scene-1 .scene-icon { top: 15%; left: 50%; transform: translateX(-50%); }
+        .scene-2 .scene-icon { top: 20%; right: 10%; }
+        .scene-3 .scene-icon { top: 15%; left: 50%; transform: translateX(-50%); }
+
+        /* Moving car animation */
+        .car-moving {
+            position: absolute;
+            font-size: 70px;
+            animation: driveCar 3s linear infinite;
+        }
+
+        @keyframes driveCar {
+            0% { left: -20%; }
+            100% { left: 120%; }
+        }
+
+        /* Beach waves */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50% 50% 0 0;
+            animation: wave 2s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Money rain */
+        .money-rain {
+            position: absolute;
+            top: -20px;
+            font-size: 30px;
+            animation: rain 1.5s linear infinite;
+        }
+
+        @keyframes rain {
+            0% { transform: translateY(-30px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(700px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Subtitle styling */
+        .subtitle {
+            position: absolute;
+            bottom: 100px;
+            left: 10px;
+            right: 10px;
+            text-align: center;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .subtitle.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .subtitle-text {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.75);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            -webkit-text-stroke: 0.5px rgba(0,0,0,0.3);
+        }
+
+        .subtitle-text .highlight {
+            color: #FFD700;
+            font-size: 18px;
+        }
+
+        .subtitle-text .red {
+            color: #FF4444;
+        }
+
+        .subtitle-text .green {
+            color: #00FF88;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FF6B35);
+            z-index: 200;
+            transition: width linear;
+        }
+
+        /* TikTok UI overlay */
+        .tiktok-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 150;
+            pointer-events: none;
+        }
+
+        .tiktok-right {
+            position: absolute;
+            right: 12px;
+            bottom: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .tiktok-icon {
+            text-align: center;
+            color: #fff;
+            font-size: 12px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .tiktok-icon .icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .tiktok-handle {
+            position: absolute;
+            bottom: 60px;
+            left: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .tiktok-desc {
+            position: absolute;
+            bottom: 40px;
+            left: 12px;
+            color: #fff;
+            font-size: 12px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            max-width: 250px;
+        }
+
+        .music-disc {
+            position: absolute;
+            bottom: 15px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #333, #666);
+            border: 2px solid #fff;
+            animation: spin 3s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #FFD700, #FF6B35);
+            color: #000;
+        }
+
+        .btn-play:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-restart {
+            background: #333;
+            color: #fff;
+        }
+
+        .btn-restart:hover {
+            background: #555;
+        }
+
+        .timer {
+            color: #fff;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        /* Transition effects */
+        .glitch-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .glitch-overlay.active {
+            animation: glitch 0.2s ease;
+        }
+
+        @keyframes glitch {
+            0% { opacity: 0; background: transparent; }
+            20% { opacity: 1; background: #ff0000; mix-blend-mode: difference; }
+            40% { opacity: 1; background: #00ff00; mix-blend-mode: exclusion; transform: translateX(5px); }
+            60% { opacity: 1; background: #0000ff; mix-blend-mode: difference; transform: translateX(-5px); }
+            80% { opacity: 0.5; background: #fff; }
+            100% { opacity: 0; background: transparent; transform: translateX(0); }
+        }
+
+        .flash-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .flash-overlay.active {
+            animation: flashWhite 0.3s ease;
+        }
+
+        /* Number counter for scene 5 */
+        .counter-display {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            font-weight: 900;
+            color: #00FF88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            white-space: nowrap;
+        }
+
+        /* Animated rule display */
+        .rule-display {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 90%;
+        }
+
+        .rule-item {
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            margin: 10px 0;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: popIn 0.4s ease forwards;
+        }
+
+        .rule-item:nth-child(1) { animation-delay: 0.2s; }
+        .rule-item:nth-child(2) { animation-delay: 0.6s; }
+        .rule-item:nth-child(3) { animation-delay: 1.0s; }
+
+        @keyframes popIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Steps display */
+        .steps-display {
+            position: absolute;
+            top: 15%;
+            left: 10%;
+            right: 10%;
+            text-align: left;
+        }
+
+        .step-item {
+            font-size: 16px;
+            font-weight: 900;
+            color: #fff;
+            margin: 15px 0;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        .step-item:nth-child(1) { animation-delay: 0.3s; }
+        .step-item:nth-child(2) { animation-delay: 1.0s; }
+        .step-item:nth-child(3) { animation-delay: 1.7s; }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Emoji grid for montage scene */
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            position: absolute;
+            top: 15%;
+            left: 10%;
+            right: 10%;
+        }
+
+        .emoji-cell {
+            font-size: 50px;
+            text-align: center;
+            animation: zoomIn 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        .emoji-cell:nth-child(1) { animation-delay: 0.1s; }
+        .emoji-cell:nth-child(2) { animation-delay: 0.3s; }
+        .emoji-cell:nth-child(3) { animation-delay: 0.5s; }
+        .emoji-cell:nth-child(4) { animation-delay: 0.7s; }
+        .emoji-cell:nth-child(5) { animation-delay: 0.9s; }
+        .emoji-cell:nth-child(6) { animation-delay: 1.1s; }
+
+        /* Wrapper for centering */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .title-label {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="title-label">📱 TIKTOK SHORT PREVIEW</div>
+        <div class="phone-frame">
+            <div class="video-container" id="videoContainer">
+                <div class="progress-bar" id="progressBar"></div>
+
+                <!-- Scene 1: Hook -->
+                <div class="scene scene-1" id="scene-1">
+                    <div class="scene-bg"></div>
+                    <div class="car-moving">🏎️</div>
+                    <div class="scene-icon" style="top:25%;font-size:100px;">🏎️💨</div>
+                </div>
+
+                <!-- Scene 2: The Problem -->
+                <div class="scene scene-2" id="scene-2">
+                    <div class="scene-bg"></div>
+                    <div class="wave"></div>
+                    <div class="scene-icon" style="top:20%;left:20%;font-size:60px;">🏖️</div>
+                    <div class="scene-icon" style="top:30%;right:15%;font-size:50px;animation-delay:0.3s;">📱</div>
+                    <div class="scene-icon" style="top:45%;left:30%;font-size:50px;animation-delay:0.5s;">🛍️</div>
+                </div>
+
+                <!-- Scene 3: Wake-Up Call -->
+                <div class="scene scene-3" id="scene-3">
+                    <div class="scene-bg"></div>
+                    <div style="position:absolute;top:15%;left:10%;width:45%;text-align:center;">
+                        <div style="font-size:60px;">🥳</div>
+                        <div style="color:#fff;font-size:12px;margin-top:5px;">AGE 20</div>
+                    </div>
+                    <div style="position:absolute;top:15%;right:10%;width:45%;text-align:center;">
+                        <div style="font-size:60px;">😰</div>
+                        <div style="color:#fff;font-size:12px;margin-top:5px;">AGE 30</div>
+                    </div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translateX(-50%);color:#fff;font-size:40px;">⚡</div>
+                </div>
+
+                <!-- Scene 4: 50/30/20 Rule -->
+                <div class="scene scene-4" id="scene-4">
+                    <div class="scene-bg"></div>
+                    <div class="car-moving" style="top:80%;font-size:40px;">🏎️</div>
+                    <div class="rule-display">
+                        <div class="rule-item" style="color:#FF6B6B;">50% → NEEDS 🏠</div>
+                        <div class="rule-item" style="color:#FFD93D;">30% → WANTS 🎮</div>
+                        <div class="rule-item" style="color:#6BCB77;">20% → SAVINGS 💰</div>
+                    </div>
+                </div>
+
+                <!-- Scene 5: Compound Interest -->
+                <div class="scene scene-5" id="scene-5">
+                    <div class="scene-bg"></div>
+                    <div class="money-rain" style="left:10%;animation-delay:0s;">💵</div>
+                    <div class="money-rain" style="left:30%;animation-delay:0.3s;">💰</div>
+                    <div class="money-rain" style="left:50%;animation-delay:0.6s;">💵</div>
+                    <div class="money-rain" style="left:70%;animation-delay:0.9s;">💰</div>
+                    <div class="money-rain" style="left:90%;animation-delay:1.2s;">💵</div>
+                    <div class="counter-display" id="counter">$100/mo</div>
+                </div>
+
+                <!-- Scene 6: What That Buys - Montage -->
+                <div class="scene scene-6" id="scene-6">
+                    <div class="scene-bg"></div>
+                    <div class="emoji-grid">
+                        <div class="emoji-cell">🏎️</div>
+                        <div class="emoji-cell">🏖️</div>
+                        <div class="emoji-cell">🚀</div>
+                        <div class="emoji-cell">🎉</div>
+                        <div class="emoji-cell">🌅</div>
+                        <div class="emoji-cell">🛥️</div>
+                    </div>
+                </div>
+
+                <!-- Scene 7: How To Start -->
+                <div class="scene scene-7" id="scene-7">
+                    <div class="scene-bg"></div>
+                    <div class="steps-display">
+                        <div class="step-item">📲 1. AUTOMATE IT</div>
+                        <div class="step-item">🙈 2. FORGET IT EXISTS</div>
+                        <div class="step-item">📈 3. WATCH IT GROW</div>
+                    </div>
+                </div>
+
+                <!-- Scene 8: Mindset Shift -->
+                <div class="scene scene-8" id="scene-8">
+                    <div class="scene-bg"></div>
+                    <div class="wave"></div>
+                    <div class="scene-icon" style="top:20%;left:20%;font-size:50px;">🏋️</div>
+                    <div class="scene-icon" style="top:25%;right:20%;font-size:50px;animation-delay:0.3s;">🏖️</div>
+                    <div class="scene-icon" style="top:45%;left:50%;transform:translateX(-50%);font-size:60px;animation-delay:0.5s;">🧠💡</div>
+                </div>
+
+                <!-- Scene 9: The Challenge -->
+                <div class="scene scene-9" id="scene-9">
+                    <div class="scene-bg"></div>
+                    <div style="position:absolute;top:20%;left:50%;transform:translateX(-50%);font-size:80px;animation:shake 0.5s infinite;">🎯</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translateX(-50%);font-size:50px;animation:pulse 0.8s infinite;">$50</div>
+                </div>
+
+                <!-- Scene 10: CTA End -->
+                <div class="scene scene-10" id="scene-10">
+                    <div class="scene-bg"></div>
+                    <div class="car-moving" style="top:50%;animation-duration:5s;">🏎️🌅</div>
+                    <div style="position:absolute;top:30%;left:50%;transform:translateX(-50%);text-align:center;">
+                        <div style="font-size:60px;animation:pulse 1s infinite;">💰</div>
+                        <div style="color:#FFD700;font-size:20px;font-weight:900;margin-top:10px;">@SaveSmart</div>
+                    </div>
+                </div>
+
+                <!-- Transition overlays -->
+                <div class="glitch-overlay" id="glitchOverlay"></div>
+                <div class="flash-overlay" id="flashOverlay"></div>
+
+                <!-- Subtitles -->
+                <div class="subtitle" id="subtitle">
+                    <span class="subtitle-text" id="subtitleText"></span>
+                </div>
+
+                <!-- TikTok UI -->
+                <div class="tiktok-ui">
+                    <div class="tiktok-right">
+                        <div class="tiktok-icon"><span class="icon">❤️</span>248K</div>
+                        <div class="tiktok-icon"><span class="icon">💬</span>3,421</div>
+                        <div class="tiktok-icon"><span class="icon">↗️</span>Share</div>
+                        <div class="tiktok-icon"><span class="icon">🔖</span>Save</div>
+                    </div>
+                    <div class="tiktok-handle">@SaveSmartFinance</div>
+                    <div class="tiktok-desc">Start saving NOW 🔥 #finance #money #investing #youngmoney</div>
+                    <div class="music-disc">🎵</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-play" id="playBtn" onclick="startVideo()">▶ PLAY</button>
+            <button class="btn btn-restart" onclick="restartVideo()">↺ RESTART</button>
+            <span class="timer" id="timer">0:00 / 0:58</span>
+        </div>
+    </div>
+
+    <script>
+        // Scene timeline configuration
+        const scenes = [
+            {
+                id: 1,
+                start: 0,
+                end: 3,
+                subtitle: 'You\'re 20 and <span class="highlight">BROKE</span>? 😤',
+                transition: 'glitch'
+            },
+            {
+                id: 2,
+                start: 3,
+                end: 7,
+                subtitle: 'Spending everything on stuff that <span class="red">WON\'T MATTER</span> in 5 years',
+                transition: 'swipe'
+            },
+            {
+                id: 3,
+                start: 7,
+                end: 12,
+                subtitle: 'Your future self is <span class="highlight">BEGGING</span> you to listen',
+                transition: 'cut'
+            },
+            {
+                id: 4,
+                start: 12,
+                end: 18,
+                subtitle: '<span class="red">50%</span> Needs | <span class="highlight">30%</span> Wants | <span class="green">20%</span> SAVINGS',
+                transition: 'zoom'
+            },
+            {
+                id: 5,
+                start: 18,
+                end: 25,
+                subtitle: '$100/month at 20 = <span class="green">$150K+</span> by 40 🤯',
+                transition: 'flash'
+            },
+            {
+                id: 6,
+                start: 25,
+                end: 32,
+                subtitle: '<span class="highlight">FREEDOM</span>. That\'s what saving buys you. 🔥',
+                transition: 'cut'
+            },
+            {
+                id: 7,
+                start: 32,
+                end: 40,
+                subtitle: 'Automate → Forget → <span class="green">Watch it GROW</span> 📈',
+                transition: 'slide'
+            },
+            {
+                id: 8,
+                start: 40,
+                end: 48,
+                subtitle: 'Rich people don\'t LOOK rich at 20. They\'re <span class="highlight">BUILDING</span> 🧱',
+                transition: 'glitch'
+            },
+            {
+                id: 9,
+                start: 48,
+                end: 55,
+                subtitle: 'Save <span class="green">$50</span> this week. Screenshot it. <span class="highlight">DO IT</span>. 🎯',
+                transition: 'shake'
+            },
+            {
+                id: 10,
+                start: 55,
+                end: 58,
+                subtitle: 'Follow for more 💰 | <span class="highlight">Share</span> with a friend who NEEDS this',
+                transition: 'fade'
+            }
+        ];
+
+        let isPlaying = false;
+        let currentTime = 0;
+        let animationFrame = null;
+        let startTimestamp = null;
+        let currentSceneIndex = -1;
+
+        const progressBar = document.getElementById('progressBar');
+        const subtitle = document.getElementById('subtitle');
+        const subtitleText = document.getElementById('subtitleText');
+        const timer = document.getElementById('timer');
+        const playBtn = document.getElementById('playBtn');
+        const glitchOverlay = document.getElementById('glitchOverlay');
+        const flashOverlay = document.getElementById('flashOverlay');
+        const counter = document.getElementById('counter');
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function triggerTransition(type) {
+            switch(type) {
+                case 'glitch':
+                    glitchOverlay.classList.add('active');
+                    setTimeout(() => glitchOverlay.classList.remove('active'), 200);
+                    break;
+                case 'flash':
+                    flashOverlay.classList.add('active');
+                    setTimeout(() => flashOverlay.classList.remove('active'), 300);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function updateCounter(progress) {
+            // progress is 0-1 within scene 5
+            const startVal = 100;
+            const endVal = 150000;
+            const currentVal = Math.floor(startVal + (endVal - startVal) * progress);
+            if (currentVal < 1000) {
+                counter.textContent = `$${currentVal}/mo`;
+            } else {
+                counter.textContent = `$${(currentVal).toLocaleString()}`;
+            }
+            counter.style.textShadow = `0 0 ${20 + progress * 30}px rgba(0, 255, 136, ${0.5 + progress * 0.5})`;
+        }
+
+        function activateScene(index) {
+            if (index === currentSceneIndex) return;
+
+            // Trigger transition from previous scene
+            if (currentSceneIndex >= 0 && currentSceneIndex < scenes.length) {
+                triggerTransition(scenes[currentSceneIndex].transition);
+            }
+
+            // Deactivate all scenes
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+
+            // Activate new scene
+            const sceneEl = document.getElementById(`scene-${scenes[index].id}`);
+            if (sceneEl) {
+                sceneEl.classList.add('active');
+            }
+
+            // Update subtitle
+            subtitleText.innerHTML = scenes[index].subtitle;
+            subtitle.classList.add('active');
+
+            currentSceneIndex = index;
+        }
+
+        function animate(timestamp) {
+            if (!startTimestamp) startTimestamp = timestamp;
+
+            const elapsed = (timestamp - startTimestamp) / 1000;
+            currentTime = elapsed;
+
+            if (currentTime >= 58) {
+                stopVideo();
+                return;
+            }
+
+            // Update progress bar
+            const progress = currentTime / 58;
+            progressBar.style.width = `${progress * 100}%`;
+
+            // Update timer
+            timer.textContent = `${formatTime(currentTime)} / 0:58`;
+
+            // Find current scene
+            for (let i = 0; i < scenes.length; i++) {
+                if (currentTime >= scenes[i].start && currentTime < scenes[i].end) {
+                    activateScene(i);
+
+                    // Scene-specific animations
+                    if (i === 4) { // Counter scene
+                        const sceneProgress = (currentTime - scenes[i].start) / (scenes[i].end - scenes[i].start);
+                        updateCounter(sceneProgress);
+                    }
+                    break;
+                }
+            }
+
+            animationFrame = requestAnimationFrame(animate);
+        }
+
+        function startVideo() {
+            if (isPlaying) {
+                pauseVideo();
+                return;
+            }
+
+            isPlaying = true;
+            playBtn.textContent = '⏸ PAUSE';
+            startTimestamp = null;
+
+            // If resuming, adjust startTimestamp
+            if (currentTime > 0) {
+                startTimestamp = performance.now() - (currentTime * 1000);
+                animationFrame = requestAnimationFrame(animate);
+            } else {
+                animationFrame = requestAnimationFrame(animate);
+            }
+        }
+
+        function pauseVideo() {
+            isPlaying = false;
+            playBtn.textContent = '▶ PLAY';
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+
+        function stopVideo() {
+            isPlaying = false;
+            playBtn.textContent = '▶ PLAY';
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            progressBar.style.width = '100%';
+            timer.textContent = '0:58 / 0:58';
+        }
+
+        function restartVideo() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            isPlaying = false;
+            currentTime = 0;
+            currentSceneIndex = -1;
+            startTimestamp = null;
+            progressBar.style.width = '0%';
+            timer.textContent = '0:00 / 0:58';
+            playBtn.textContent = '▶ PLAY';
+
+            // Reset all scenes
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            subtitle.classList.remove('active');
+
+            // Reset counter
+            counter.textContent = '$100/mo';
+        }
+
+        // Initialize - show first frame
+        document.getElementById('scene-1').classList.add('active');
+        subtitleText.innerHTML = scenes[0].subtitle;
+        subtitle.classList.add('active');
+    </script>
+</body>
+</html>
