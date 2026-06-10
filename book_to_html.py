@@ -15,6 +15,57 @@ import verify_book as vb  # reuse the markdown parsers
 N = 9
 
 
+INTRO_HTML = """
+<p>Welcome. Whatever brought you to this book &mdash; a love of numbers, a
+quiet morning with a cup of tea, or simply the wish to keep the mind busy and
+bright &mdash; you are in good company. Sudoku has charmed millions of people
+around the world, and it is about to become a friendly part of your day.</p>
+
+<p>The puzzle has a longer and more surprising story than most people imagine.
+Its roots reach back to the 1700s and the Swiss mathematician Leonhard Euler,
+who studied &ldquo;Latin squares&rdquo; &mdash; grids in which each symbol
+appears exactly once in every row and column. The modern game took shape much
+later. In 1979, an American puzzle designer named Howard Garns created a
+number puzzle for Dell magazines and called it &ldquo;Number Place.&rdquo; It
+found its true home in Japan, where the publisher Nikoli introduced it in 1984
+and gave it the name we use today: Sudoku, drawn from a phrase meaning
+&ldquo;the digits must stay single.&rdquo; Two decades later, a New Zealander
+named Wayne Gould wrote a computer program to generate puzzles and offered them
+to newspapers everywhere. By 2005, Sudoku had become a beloved daily ritual on
+nearly every continent.</p>
+
+<p>Its lasting popularity is no accident. Beyond the simple pleasure of solving,
+Sudoku invites the mind to do wonderful work. Each grid calls on logic,
+concentration, and working memory &mdash; the skill of holding several
+possibilities in mind at once. Hunting for the next number sharpens pattern
+recognition and rewards patience, and finishing a grid brings a warm sense of
+accomplishment. Those who study the mind often point to the value of regular,
+enjoyable mental activity, and a puzzle that is both calming and gently
+challenging makes an ideal companion for that healthy habit. Think of every
+session as a pleasant walk for your memory and focus.</p>
+
+<p>A few gentle words before you begin. There is no clock here and no need to
+rush. Every puzzle in this book has exactly one solution, and each one can be
+reached through careful, step-by-step reasoning &mdash; never guesswork. A
+pencil and a soft eraser are your best friends; mistakes are simply part of the
+journey. Start with the Medium puzzles to warm up, then move to Hard and
+Extreme as your confidence grows. When you would like to check your work, the
+answers wait at the back of the book, each one numbered to match its puzzle.</p>
+
+<p class="signoff">Settle in, take a deep breath, and enjoy. Happy puzzling!</p>
+"""
+
+
+# Five short, encouraging notes shown in italic above each puzzle (rotating).
+TIPS = [
+    "A few quiet minutes with a puzzle each day keep the mind curious and bright.",
+    "Every number you place is a small victory \u2014 enjoy each one.",
+    "There is no clock here. Take your time, and let the answer come to you.",
+    "A sharp mind is built one happy habit at a time.",
+    "Mistakes are part of the fun \u2014 erase, smile, and try again.",
+]
+
+
 def parse_meta(text):
     """Return {num: (title, difficulty, clues)}."""
     meta = {}
@@ -60,13 +111,22 @@ body { font-family: Georgia, "Times New Roman", serif; color: var(--ink);
 .tier-divider { page-break-before: always; text-align:center; padding-top:200px; }
 .tier-divider h2 { font-size:46px; border:none; }
 
-.page { page-break-after: always; padding:40px 48px; min-height:92vh;
-        display:flex; flex-direction:column; }
+.page { page-break-after: always; page-break-inside: avoid; break-inside: avoid;
+        padding:36px 48px; display:flex; flex-direction:column; }
 .puzzle-head h2 { font-size:34px; margin:0 0 4px; }
-.puzzle-head .diff { font-size:20px; color:#333; margin:0 0 8px; }
-.grid-wrap { flex:1; display:flex; align-items:center; justify-content:center; }
-.notes { font-size:17px; color:#555; margin-top:20px; }
-.foot { text-align:center; font-size:15px; color:#777; margin-top:18px; }
+.puzzle-head .diff { font-size:20px; color:#333; margin:0 0 6px; }
+.tip { font-style:italic; font-size:19px; color:#3a3a3a; text-align:center;
+       margin:6px 0 18px; line-height:1.4; }
+.grid-wrap { display:flex; align-items:center; justify-content:center;
+             margin:8px 0 14px; }
+.notes { font-size:17px; color:#555; margin-top:14px; }
+.foot { text-align:center; font-size:15px; color:#777; margin-top:14px; }
+
+/* Introduction page */
+.intro { page-break-after: always; padding:64px 72px; }
+.intro h2 { font-size:42px; text-align:center; margin:0 0 30px; }
+.intro p { font-size:19.5px; line-height:1.7; margin:0 0 15px; text-align:justify; }
+.intro .signoff { text-align:center; font-style:italic; color:#444; margin-top:22px; }
 
 table.sudoku { border-collapse:collapse; }
 table.sudoku td { text-align:center; vertical-align:middle; font-weight:bold;
@@ -92,7 +152,7 @@ table.sudoku.mini td:nth-child(3n) { border-right:2.5px solid var(--ink); }
 .ans-page h3 { font-size:26px; margin:0 0 20px; }
 .ans-grid { display:grid; grid-template-columns:1fr 1fr; gap:34px 24px;
             justify-items:center; }
-.ans-cell { text-align:center; }
+.ans-cell { text-align:center; break-inside: avoid; page-break-inside: avoid; }
 .ans-cell .lbl { font-size:18px; font-weight:bold; margin-bottom:8px; }
 @page { size: 8.5in 11in; margin: 0.6in; }
 """
@@ -118,6 +178,10 @@ def main():
                  "<p>Every puzzle has exactly one solution. "
                  "Answers are in the back, numbered to match.</p></div>")
 
+    # Introduction page
+    parts.append("<div class='intro'><h2>Welcome to Your Puzzle Book</h2>{}</div>"
+                 .format(INTRO_HTML))
+
     # Puzzle pages, grouped by tier with a divider
     last_tier = None
     for num in nums:
@@ -129,6 +193,7 @@ def main():
         parts.append("<div class='puzzle-head'><h2>Puzzle {}: {}</h2>"
                      "<p class='diff'>Difficulty: {} &nbsp;&middot;&nbsp; Clues: {}</p></div>"
                      .format(num, title, diff, clues))
+        parts.append("<p class='tip'><em>{}</em></p>".format(TIPS[(num - 1) % len(TIPS)]))
         parts.append("<div class='grid-wrap'>{}</div>".format(big_table(puzzles[num])))
         parts.append("<div class='notes'>Notes: "
                      "________________________________________________</div>")
