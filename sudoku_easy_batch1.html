@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Large Print Sudoku - Easy, Batch 1</title>
+<style>
+  :root { --ink:#1a1a1a; --line:#1a1a1a; --soft:#f6f4ee; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    background: #fffdf8;
+    color: var(--ink);
+    margin: 0;
+    padding: 40px 20px 80px;
+    line-height: 1.5;
+  }
+  .page { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 40px; text-align: center; margin: 0 0 6px; }
+  .sub { text-align: center; font-size: 20px; color: #555; margin-bottom: 40px; }
+  .puzzle { page-break-inside: avoid; margin: 0 0 70px; }
+  h2 { font-size: 30px; border-bottom: 4px solid var(--ink); padding-bottom: 8px; }
+  h3 { font-size: 22px; margin: 28px 0 12px; }
+  table.sudoku { border-collapse: collapse; margin: 0 auto 10px; }
+  table.sudoku td {
+    width: 58px; height: 58px;
+    text-align: center; vertical-align: middle;
+    font-size: 30px; font-weight: bold;
+    border: 1px solid #999;
+  }
+  table.sudoku td.given { color: #000; }
+  table.sudoku td.blank { color: #bbb; }
+  /* thick 3x3 box borders */
+  table.sudoku td { border-top: 1px solid #999; border-left: 1px solid #999; }
+  table.sudoku tr:first-child td { border-top: 3px solid var(--ink); }
+  table.sudoku tr td:first-child { border-left: 3px solid var(--ink); }
+  table.sudoku tr td:last-child { border-right: 3px solid var(--ink); }
+  table.sudoku tr:last-child td { border-bottom: 3px solid var(--ink); }
+  table.sudoku tr:nth-child(3n) td { border-bottom: 3px solid var(--ink); }
+  table.sudoku td:nth-child(3n) { border-right: 3px solid var(--ink); }
+  pre.textgrid {
+    background: var(--soft);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 16px 20px;
+    font-size: 19px;
+    font-family: "Courier New", monospace;
+    line-height: 1.35;
+    overflow-x: auto;
+  }
+  .meta { text-align:center; font-size:17px; color:#666; margin-bottom:18px; }
+  .grids { display:flex; flex-wrap:wrap; gap:30px; justify-content:center; align-items:flex-start; }
+  .grids > div { flex: 1 1 320px; }
+  .grids h3 { text-align:center; }
+  details { margin-top: 10px; }
+  summary { font-size: 20px; cursor: pointer; font-weight: bold; }
+  footer { text-align:center; color:#888; font-size:15px; margin-top:40px; }
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Large Print Sudoku</h1>
+<div class="sub">Easy Puzzles &mdash; Batch 1 &middot; Relax, Refresh, Enjoy</div>
+
+<section class="puzzle">
+<h2>Puzzle 1: Afternoon Relaxation</h2>
+<div class="meta">Difficulty: Easy &middot; 38 given numbers &middot; one unique solution</div>
+<div class="grids">
+<div><h3>Starting Grid</h3><table class="sudoku"><tr><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">6</td><td class="blank">&middot;</td><td class="given">4</td><td class="blank">&middot;</td><td class="given">2</td><td class="blank">&middot;</td><td class="given">1</td></tr><tr><td class="given">4</td><td class="given">8</td><td class="blank">&middot;</td><td class="given">6</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">5</td></tr><tr><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">5</td><td class="given">9</td><td class="blank">&middot;</td><td class="given">8</td><td class="blank">&middot;</td><td class="given">4</td><td class="blank">&middot;</td></tr><tr><td class="blank">&middot;</td><td class="given">5</td><td class="blank">&middot;</td><td class="given">4</td><td class="blank">&middot;</td><td class="given">9</td><td class="blank">&middot;</td><td class="given">7</td><td class="given">2</td></tr><tr><td class="given">6</td><td class="blank">&middot;</td><td class="given">3</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">5</td><td class="blank">&middot;</td><td class="given">4</td></tr><tr><td class="given">9</td><td class="given">4</td><td class="blank">&middot;</td><td class="given">5</td><td class="blank">&middot;</td><td class="given">7</td><td class="blank">&middot;</td><td class="given">6</td><td class="blank">&middot;</td></tr><tr><td class="blank">&middot;</td><td class="given">6</td><td class="blank">&middot;</td><td class="given">7</td><td class="blank">&middot;</td><td class="given">4</td><td class="given">8</td><td class="blank">&middot;</td><td class="blank">&middot;</td></tr><tr><td class="given">8</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">6</td><td class="blank">&middot;</td><td class="given">5</td><td class="given">9</td></tr><tr><td class="given">5</td><td class="blank">&middot;</td><td class="given">4</td><td class="blank">&middot;</td><td class="given">9</td><td class="blank">&middot;</td><td class="given">6</td><td class="blank">&middot;</td><td class="blank">&middot;</td></tr></table></div>
+<div><h3>Solution</h3><table class="sudoku"><tr><td class="given">7</td><td class="given">9</td><td class="given">6</td><td class="given">3</td><td class="given">4</td><td class="given">5</td><td class="given">2</td><td class="given">8</td><td class="given">1</td></tr><tr><td class="given">4</td><td class="given">8</td><td class="given">1</td><td class="given">6</td><td class="given">7</td><td class="given">2</td><td class="given">9</td><td class="given">3</td><td class="given">5</td></tr><tr><td class="given">3</td><td class="given">2</td><td class="given">5</td><td class="given">9</td><td class="given">1</td><td class="given">8</td><td class="given">7</td><td class="given">4</td><td class="given">6</td></tr><tr><td class="given">1</td><td class="given">5</td><td class="given">8</td><td class="given">4</td><td class="given">6</td><td class="given">9</td><td class="given">3</td><td class="given">7</td><td class="given">2</td></tr><tr><td class="given">6</td><td class="given">7</td><td class="given">3</td><td class="given">2</td><td class="given">8</td><td class="given">1</td><td class="given">5</td><td class="given">9</td><td class="given">4</td></tr><tr><td class="given">9</td><td class="given">4</td><td class="given">2</td><td class="given">5</td><td class="given">3</td><td class="given">7</td><td class="given">1</td><td class="given">6</td><td class="given">8</td></tr><tr><td class="given">2</td><td class="given">6</td><td class="given">9</td><td class="given">7</td><td class="given">5</td><td class="given">4</td><td class="given">8</td><td class="given">1</td><td class="given">3</td></tr><tr><td class="given">8</td><td class="given">3</td><td class="given">7</td><td class="given">1</td><td class="given">2</td><td class="given">6</td><td class="given">4</td><td class="given">5</td><td class="given">9</td></tr><tr><td class="given">5</td><td class="given">1</td><td class="given">4</td><td class="given">8</td><td class="given">9</td><td class="given">3</td><td class="given">6</td><td class="given">2</td><td class="given">7</td></tr></table></div>
+</div>
+<h3>Starting Grid (text)</h3>
+<pre class="textgrid">+-------+-------+-------+
+| _ _ 6 | _ 4 _ | 2 _ 1 |
+| 4 8 _ | 6 _ _ | _ _ 5 |
+| _ _ 5 | 9 _ 8 | _ 4 _ |
++-------+-------+-------+
+| _ 5 _ | 4 _ 9 | _ 7 2 |
+| 6 _ 3 | _ _ _ | 5 _ 4 |
+| 9 4 _ | 5 _ 7 | _ 6 _ |
++-------+-------+-------+
+| _ 6 _ | 7 _ 4 | 8 _ _ |
+| 8 _ _ | _ _ 6 | _ 5 9 |
+| 5 _ 4 | _ 9 _ | 6 _ _ |
++-------+-------+-------+</pre>
+<details><summary>Show Solution (text)</summary>
+<pre class="textgrid">+-------+-------+-------+
+| 7 9 6 | 3 4 5 | 2 8 1 |
+| 4 8 1 | 6 7 2 | 9 3 5 |
+| 3 2 5 | 9 1 8 | 7 4 6 |
++-------+-------+-------+
+| 1 5 8 | 4 6 9 | 3 7 2 |
+| 6 7 3 | 2 8 1 | 5 9 4 |
+| 9 4 2 | 5 3 7 | 1 6 8 |
++-------+-------+-------+
+| 2 6 9 | 7 5 4 | 8 1 3 |
+| 8 3 7 | 1 2 6 | 4 5 9 |
+| 5 1 4 | 8 9 3 | 6 2 7 |
++-------+-------+-------+</pre>
+</details>
+</section>
+<section class="puzzle">
+<h2>Puzzle 2: Morning Sunshine</h2>
+<div class="meta">Difficulty: Easy &middot; 37 given numbers &middot; one unique solution</div>
+<div class="grids">
+<div><h3>Starting Grid</h3><table class="sudoku"><tr><td class="blank">&middot;</td><td class="given">6</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">8</td><td class="given">1</td><td class="given">2</td><td class="blank">&middot;</td></tr><tr><td class="given">9</td><td class="given">2</td><td class="blank">&middot;</td><td class="given">6</td><td class="blank">&middot;</td><td class="given">7</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">3</td></tr><tr><td class="blank">&middot;</td><td class="given">7</td><td class="blank">&middot;</td><td class="given">1</td><td class="blank">&middot;</td><td class="given">3</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td></tr><tr><td class="given">4</td><td class="given">1</td><td class="given">7</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">2</td></tr><tr><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">3</td><td class="given">4</td><td class="given">1</td><td class="given">2</td><td class="given">9</td><td class="blank">&middot;</td><td class="blank">&middot;</td></tr><tr><td class="given">2</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">6</td><td class="given">1</td><td class="given">4</td></tr><tr><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">2</td><td class="blank">&middot;</td><td class="given">1</td><td class="blank">&middot;</td><td class="given">3</td><td class="blank">&middot;</td></tr><tr><td class="given">1</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">5</td><td class="blank">&middot;</td><td class="given">4</td><td class="blank">&middot;</td><td class="given">9</td><td class="given">6</td></tr><tr><td class="blank">&middot;</td><td class="given">4</td><td class="given">9</td><td class="given">3</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">8</td><td class="blank">&middot;</td></tr></table></div>
+<div><h3>Solution</h3><table class="sudoku"><tr><td class="given">3</td><td class="given">6</td><td class="given">5</td><td class="given">9</td><td class="given">4</td><td class="given">8</td><td class="given">1</td><td class="given">2</td><td class="given">7</td></tr><tr><td class="given">9</td><td class="given">2</td><td class="given">1</td><td class="given">6</td><td class="given">5</td><td class="given">7</td><td class="given">8</td><td class="given">4</td><td class="given">3</td></tr><tr><td class="given">8</td><td class="given">7</td><td class="given">4</td><td class="given">1</td><td class="given">2</td><td class="given">3</td><td class="given">5</td><td class="given">6</td><td class="given">9</td></tr><tr><td class="given">4</td><td class="given">1</td><td class="given">7</td><td class="given">8</td><td class="given">6</td><td class="given">9</td><td class="given">3</td><td class="given">5</td><td class="given">2</td></tr><tr><td class="given">6</td><td class="given">5</td><td class="given">3</td><td class="given">4</td><td class="given">1</td><td class="given">2</td><td class="given">9</td><td class="given">7</td><td class="given">8</td></tr><tr><td class="given">2</td><td class="given">9</td><td class="given">8</td><td class="given">7</td><td class="given">3</td><td class="given">5</td><td class="given">6</td><td class="given">1</td><td class="given">4</td></tr><tr><td class="given">7</td><td class="given">8</td><td class="given">6</td><td class="given">2</td><td class="given">9</td><td class="given">1</td><td class="given">4</td><td class="given">3</td><td class="given">5</td></tr><tr><td class="given">1</td><td class="given">3</td><td class="given">2</td><td class="given">5</td><td class="given">8</td><td class="given">4</td><td class="given">7</td><td class="given">9</td><td class="given">6</td></tr><tr><td class="given">5</td><td class="given">4</td><td class="given">9</td><td class="given">3</td><td class="given">7</td><td class="given">6</td><td class="given">2</td><td class="given">8</td><td class="given">1</td></tr></table></div>
+</div>
+<h3>Starting Grid (text)</h3>
+<pre class="textgrid">+-------+-------+-------+
+| _ 6 _ | _ _ 8 | 1 2 _ |
+| 9 2 _ | 6 _ 7 | _ _ 3 |
+| _ 7 _ | 1 _ 3 | _ _ _ |
++-------+-------+-------+
+| 4 1 7 | _ _ _ | _ _ 2 |
+| _ _ 3 | 4 1 2 | 9 _ _ |
+| 2 _ _ | _ _ _ | 6 1 4 |
++-------+-------+-------+
+| _ _ _ | 2 _ 1 | _ 3 _ |
+| 1 _ _ | 5 _ 4 | _ 9 6 |
+| _ 4 9 | 3 _ _ | _ 8 _ |
++-------+-------+-------+</pre>
+<details><summary>Show Solution (text)</summary>
+<pre class="textgrid">+-------+-------+-------+
+| 3 6 5 | 9 4 8 | 1 2 7 |
+| 9 2 1 | 6 5 7 | 8 4 3 |
+| 8 7 4 | 1 2 3 | 5 6 9 |
++-------+-------+-------+
+| 4 1 7 | 8 6 9 | 3 5 2 |
+| 6 5 3 | 4 1 2 | 9 7 8 |
+| 2 9 8 | 7 3 5 | 6 1 4 |
++-------+-------+-------+
+| 7 8 6 | 2 9 1 | 4 3 5 |
+| 1 3 2 | 5 8 4 | 7 9 6 |
+| 5 4 9 | 3 7 6 | 2 8 1 |
++-------+-------+-------+</pre>
+</details>
+</section>
+<section class="puzzle">
+<h2>Puzzle 3: Quiet Evening Tea</h2>
+<div class="meta">Difficulty: Easy &middot; 37 given numbers &middot; one unique solution</div>
+<div class="grids">
+<div><h3>Starting Grid</h3><table class="sudoku"><tr><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">4</td><td class="blank">&middot;</td><td class="given">8</td><td class="given">9</td><td class="given">1</td><td class="given">3</td></tr><tr><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">9</td><td class="given">5</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td></tr><tr><td class="blank">&middot;</td><td class="given">4</td><td class="given">3</td><td class="blank">&middot;</td><td class="given">9</td><td class="given">6</td><td class="blank">&middot;</td><td class="given">8</td><td class="given">5</td></tr><tr><td class="given">8</td><td class="given">9</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">2</td><td class="blank">&middot;</td><td class="blank">&middot;</td></tr><tr><td class="given">6</td><td class="given">1</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">4</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">9</td><td class="given">7</td></tr><tr><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">2</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">5</td><td class="given">4</td></tr><tr><td class="given">4</td><td class="given">5</td><td class="blank">&middot;</td><td class="given">1</td><td class="given">2</td><td class="blank">&middot;</td><td class="given">6</td><td class="given">3</td><td class="blank">&middot;</td></tr><tr><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="given">5</td><td class="given">1</td><td class="blank">&middot;</td><td class="blank">&middot;</td></tr><tr><td class="given">9</td><td class="given">6</td><td class="given">1</td><td class="given">3</td><td class="blank">&middot;</td><td class="given">4</td><td class="blank">&middot;</td><td class="blank">&middot;</td><td class="blank">&middot;</td></tr></table></div>
+<div><h3>Solution</h3><table class="sudoku"><tr><td class="given">5</td><td class="given">2</td><td class="given">6</td><td class="given">4</td><td class="given">7</td><td class="given">8</td><td class="given">9</td><td class="given">1</td><td class="given">3</td></tr><tr><td class="given">7</td><td class="given">8</td><td class="given">9</td><td class="given">5</td><td class="given">3</td><td class="given">1</td><td class="given">4</td><td class="given">2</td><td class="given">6</td></tr><tr><td class="given">1</td><td class="given">4</td><td class="given">3</td><td class="given">2</td><td class="given">9</td><td class="given">6</td><td class="given">7</td><td class="given">8</td><td class="given">5</td></tr><tr><td class="given">8</td><td class="given">9</td><td class="given">4</td><td class="given">7</td><td class="given">5</td><td class="given">3</td><td class="given">2</td><td class="given">6</td><td class="given">1</td></tr><tr><td class="given">6</td><td class="given">1</td><td class="given">5</td><td class="given">8</td><td class="given">4</td><td class="given">2</td><td class="given">3</td><td class="given">9</td><td class="given">7</td></tr><tr><td class="given">3</td><td class="given">7</td><td class="given">2</td><td class="given">6</td><td class="given">1</td><td class="given">9</td><td class="given">8</td><td class="given">5</td><td class="given">4</td></tr><tr><td class="given">4</td><td class="given">5</td><td class="given">8</td><td class="given">1</td><td class="given">2</td><td class="given">7</td><td class="given">6</td><td class="given">3</td><td class="given">9</td></tr><tr><td class="given">2</td><td class="given">3</td><td class="given">7</td><td class="given">9</td><td class="given">6</td><td class="given">5</td><td class="given">1</td><td class="given">4</td><td class="given">8</td></tr><tr><td class="given">9</td><td class="given">6</td><td class="given">1</td><td class="given">3</td><td class="given">8</td><td class="given">4</td><td class="given">5</td><td class="given">7</td><td class="given">2</td></tr></table></div>
+</div>
+<h3>Starting Grid (text)</h3>
+<pre class="textgrid">+-------+-------+-------+
+| _ _ _ | 4 _ 8 | 9 1 3 |
+| _ _ 9 | 5 _ _ | _ _ _ |
+| _ 4 3 | _ 9 6 | _ 8 5 |
++-------+-------+-------+
+| 8 9 _ | _ _ _ | 2 _ _ |
+| 6 1 _ | _ 4 _ | _ 9 7 |
+| _ _ 2 | _ _ _ | _ 5 4 |
++-------+-------+-------+
+| 4 5 _ | 1 2 _ | 6 3 _ |
+| _ _ _ | _ _ 5 | 1 _ _ |
+| 9 6 1 | 3 _ 4 | _ _ _ |
++-------+-------+-------+</pre>
+<details><summary>Show Solution (text)</summary>
+<pre class="textgrid">+-------+-------+-------+
+| 5 2 6 | 4 7 8 | 9 1 3 |
+| 7 8 9 | 5 3 1 | 4 2 6 |
+| 1 4 3 | 2 9 6 | 7 8 5 |
++-------+-------+-------+
+| 8 9 4 | 7 5 3 | 2 6 1 |
+| 6 1 5 | 8 4 2 | 3 9 7 |
+| 3 7 2 | 6 1 9 | 8 5 4 |
++-------+-------+-------+
+| 4 5 8 | 1 2 7 | 6 3 9 |
+| 2 3 7 | 9 6 5 | 1 4 8 |
+| 9 6 1 | 3 8 4 | 5 7 2 |
++-------+-------+-------+</pre>
+</details>
+</section>
+<footer>Every puzzle has exactly one solution and can be solved with
+basic logic &mdash; no guessing required. Happy puzzling!</footer>
+</div>
+</body>
+</html>
