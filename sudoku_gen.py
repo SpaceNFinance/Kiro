@@ -1,4 +1,4 @@
-"""Large-print Sudoku puzzle generator for the Senior Reader series.
+"""Large-print Sudoku puzzle generator for the puzzle book series.
 
 Generates valid Easy-difficulty Sudoku puzzles, each guaranteed to have
 exactly ONE unique solution that is reachable with basic logic (the
