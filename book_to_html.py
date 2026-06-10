@@ -169,11 +169,11 @@ def main():
     nums = sorted(puzzles)
     parts = ["<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'>",
              "<meta name='viewport' content='width=device-width, initial-scale=1'>",
-             "<title>Large Print Sudoku - 60 Puzzles</title>",
+             "<title>Sudoku Master - 60 Puzzles</title>",
              "<style>{}</style></head><body>".format(CSS)]
 
     # Title page
-    parts.append("<div class='book-title'><h1>Large Print Sudoku</h1>"
+    parts.append("<div class='book-title'><h1>Sudoku Master</h1>"
                  "<p>60 Puzzles &middot; Medium &middot; Hard &middot; Extreme</p>"
                  "<p>Every puzzle has exactly one solution. "
                  "Answers are in the back, numbered to match.</p></div>")
